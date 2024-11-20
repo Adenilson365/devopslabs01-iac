@@ -1,0 +1,11 @@
+credentials.json
+*.pub
+gcp
+*.tfstate
+.terraform/
+*.lock.hd
+*.lock.hcl
+*tfstate.backup
+backend.tf
+terraform.tfstate*
+providers.tf
