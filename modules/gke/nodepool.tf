@@ -5,7 +5,7 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
 
   node_config {
     preemptible     = true
-    machine_type    = "e2-medium"
+    machine_type    = var.gke_type_node
     service_account = var.gke_service_account
     disk_size_gb    = var.gke_disk_size
     disk_type       = var.gke_disk_type

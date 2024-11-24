@@ -55,3 +55,9 @@ variable "gke_deletion_protection" {
   default     = false
 
 }
+
+variable "gke_type_node" {
+  description = "The type of the node for the GKE cluster"
+  type        = string
+  default     = "e2-medium"
+}

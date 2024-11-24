@@ -1,3 +1,8 @@
-### Repositório de IAC
-- [Repositório Frontend](https://github.com/Adenilson365/devopslabs01-frontend)
-- [Repositório Catalogo](https://github.com/Adenilson365/devopslabs01-catalogo)
+### Terraform GCP (Google Cloud Platform)
+- Cria uma VPC no GCP
+- Cria um cluster do GKE
+
+### Objetivos
+- Praticar Terraform
+- Preticar modules do Terraform
+- Prover infraestrutura básica para os Laboratórios de estudos de Kubernetes e DevOps

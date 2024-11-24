@@ -25,6 +25,7 @@ module "gke" {
   gke_subnet              = "subnet-us-east1"
   gke_disk_size           = 12
   gke_disk_type           = "pd-standard"
+  gke_type_node           = "e2-standard-2"
   gke_deletion_protection = false
   depends_on              = [module.network-gcp]
 }
