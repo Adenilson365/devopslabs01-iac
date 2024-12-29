@@ -9,23 +9,28 @@ terraform {
 
 module "network-gcp" {
   source        = "./modules/network"
-  vpc_name      = "vpc-devops-labs01"
-  subnet_name   = "sub-devops-labs01"
-  firewall_name = "fir-devops-labs01"
-  vpc_regions   = ["us-east1"]
+  vpc_name      = var.vpc_name
+  subnet_name   = var.subnet_name
+  firewall_name = var.firewall_name
+  vpc_regions   = var.vpc_regions
 }
 
 module "gke" {
   source                  = "./modules/gke"
-  gke_name                = "devops-labs01"
-  gke_location            = "us-east1"
-  gke_node_count          = 1
-  gke_service_account     = "terraform-linux-sa@devopslabs-442223.iam.gserviceaccount.com"
-  gke_network             = module.network-gcp.vpc_name
-  gke_subnet              = "subnet-us-east1"
-  gke_disk_size           = 12
-  gke_disk_type           = "pd-standard"
-  gke_type_node           = "e2-standard-2"
-  gke_deletion_protection = false
+  gke_name                = var.gke_name
+  gke_location            = var.gke_location
+  gke_node_count          = var.gke_node_count
+  gke_service_account     = var.gke_service_account
+  gke_network             = var.gke_network
+  gke_subnet              = var.gke_subnet
+  gke_disk_size           = var.gke_disk_size
+  gke_disk_type           = var.gke_disk_type
+  gke_type_node           = var.gke_type_node
+  gke_deletion_protection = var.gke_deletion_protection
+  node_locations          = var.node_locations
+  project_id              = var.project_id
   depends_on              = [module.network-gcp]
+  auto_scaling_min_node_count = var.auto_scaling_min_node_count
+  auto_scaling_max_node_count = var.auto_scaling_max_node_count
 }
+

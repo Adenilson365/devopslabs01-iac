@@ -9,3 +9,4 @@ gcp
 backend.tf
 terraform.tfstate*
 providers.tf
+*.tfvars
