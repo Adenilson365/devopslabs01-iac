@@ -34,3 +34,14 @@ module "gke" {
   auto_scaling_max_node_count = var.auto_scaling_max_node_count
 }
 
+module "sql" {
+  source = "./modules/sql"
+  sql_instance_name = var.sql_instance_name
+  sql_instance_region = var.sql_instance_region
+  sql_instance_database_version = var.sql_instance_database_version
+  sql_deletion_protection = var.sql_deletion_protection
+  sql_intance_region = "us-east1"
+  sql_disk_autoresize = var.sql_disk_autoresize
+  sql_tier = var.sql_tier
+  depends_on = [module.network-gcp]
+}

@@ -9,3 +9,7 @@ output "module_vpc_name" {
 output "module_gke_name" {
   value = module.gke.gke_name_output
 }
+
+output "module_sql_instance_ip" {
+  value = module.sql.ip_address
+}
