@@ -15,7 +15,7 @@ resource "google_pubsub_subscription" "subscription-labs01" {
   cloud_storage_config {
     bucket = var.storage_bucket
     filename_prefix = "subs-"
-service_account_email = "terraform-linux-sa@devopslabs-442223.iam.gserviceaccount.com"
+    service_account_email = var.sa_email
   }
   depends_on = [ google_pubsub_topic.subscription-labs01 ]
 }

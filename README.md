@@ -1,11 +1,14 @@
-### Terraform GCP (Google Cloud Platform)
+## Etapa Atual: Refatoração
+
+### Terraform Google Cloud Platform (GCP)
 - Cria uma VPC no GCP
 - Cria um cluster do GKE
+- Cria um banco de dados PostgreSQL
 
 ### Objetivos
 - Praticar Terraform
-- Preticar modules do Terraform
-- Prover infraestrutura básica para os Laboratórios de estudos de Kubernetes e DevOps
+- Praticar modulos do Terraform
+- Prover infraestrutura para os Laboratórios de estudos de Kubernetes e DevOps
 
 
 ###  Como usar

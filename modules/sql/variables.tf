@@ -34,3 +34,9 @@ variable "sql_instance_region" {
     type = string
   
 }
+
+variable "sql_database_name" {
+  description = "value of the SQL database name"
+  type = string
+  default = "devopslabs"
+}
