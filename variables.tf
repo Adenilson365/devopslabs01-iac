@@ -116,3 +116,16 @@ variable "sql_tier" {
     default = "db-f1-micro"
 }
 
+variable "sql_private_network" {
+  description = "value of the private network"
+  type = string
+  default = "default"
+  
+}
+
+variable "sql_ip_public_enabled" {
+  description = "value of the public IP enabled"
+  type = bool
+  default = false
+  
+}

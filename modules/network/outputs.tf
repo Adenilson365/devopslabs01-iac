@@ -9,3 +9,9 @@ output "subnet_id" {
 output "vpc_name" {
   value = var.vpc_name
 }
+
+output "vpc_self_link" {
+  value = google_compute_network.vpc_network.self_link
+  
+}
+
