@@ -10,3 +10,4 @@ backend.tf
 terraform.tfstate*
 providers.tf
 *.tfvars
+export-credentials.sh

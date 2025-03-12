@@ -22,6 +22,13 @@ variable "gke_name" {
   description = "The name of the GKE cluster"
   type        = string
 }
+
+variable "gke_count" {
+  description = "The number of GKE clusters"
+  type        = number
+  default = 1
+  
+}
 variable "gke_location" {
   description = "The region in which the GKE cluster will be created"
   type        = string

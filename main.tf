@@ -15,24 +15,28 @@ module "network-gcp" {
   vpc_regions   = var.vpc_regions
 }
 
-# module "gke" {
-#   source                  = "./modules/gke"
-#   gke_name                = var.gke_name
-#   gke_location            = var.gke_location
-#   gke_node_count          = var.gke_node_count
-#   gke_service_account     = var.gke_service_account
-#   gke_network             = var.gke_network
-#   gke_subnet              = var.gke_subnet
-#   gke_disk_size           = var.gke_disk_size
-#   gke_disk_type           = var.gke_disk_type
-#   gke_type_node           = var.gke_type_node
-#   gke_deletion_protection = var.gke_deletion_protection
-#   node_locations          = var.node_locations
-#   project_id              = var.project_id
-#   depends_on              = [module.network-gcp]
-#   auto_scaling_min_node_count = var.auto_scaling_min_node_count
-#   auto_scaling_max_node_count = var.auto_scaling_max_node_count
-# }
+module "gke" {
+  source                  = "./modules/gke"
+  gke_name                = "${var.gke_name}-${count.index}"
+  gke_location            = var.gke_location
+  gke_node_count          = var.gke_node_count
+  gke_service_account     = var.gke_service_account
+  gke_network             = var.gke_network
+  gke_subnet              = var.gke_subnet
+  gke_disk_size           = var.gke_disk_size
+  gke_disk_type           = var.gke_disk_type
+  gke_type_node           = var.gke_type_node
+  gke_deletion_protection = var.gke_deletion_protection
+  node_locations          = var.node_locations
+  project_id              = var.project_id
+  depends_on              = [module.network-gcp]
+  auto_scaling_min_node_count = var.auto_scaling_min_node_count
+  auto_scaling_max_node_count = var.auto_scaling_max_node_count
+  count                  = var.gke_count
+}
+
+
+
 
 module "sql" {
   source = "./modules/sql"
@@ -48,41 +52,9 @@ module "sql" {
   depends_on = [module.network-gcp, google_service_networking_connection.private_vpc_connection_01]
 }
 
-resource "google_compute_instance" "default" {
-  name         = "my-instance"
-  machine_type = "n2-standard-2"
-  zone         = "us-east1-b"
-
-  tags = ["foo", "bar"]
-
-  boot_disk {
-    initialize_params {
-      image = "debian-cloud/debian-11"
-      labels = {
-        my_label = "value"
-      }
-    }
-  }
-
-  // Local SSD disk
-  scratch_disk {
-    interface = "NVME"
-  }
-
-  network_interface {
-    network = module.network-gcp.vpc_name
-    subnetwork = module.network-gcp.subnet_id["us-east1"].self_link
-
-  }
-
-  metadata = {
-    foo = "bar"
-  }
 
 
-}
-
-# Faixa de IP reservada para o peering
+#Faixa de IP reservada para o peering
 resource "google_compute_global_address" "private_ip_range" {
   name          = "private-sql-range"
   purpose       = "VPC_PEERING"
