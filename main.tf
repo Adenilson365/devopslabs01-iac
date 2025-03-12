@@ -17,7 +17,7 @@ module "network-gcp" {
 
 module "gke" {
   source                  = "./modules/gke"
-  gke_name                = var.gke_name
+  gke_name                = "${var.gke_name}-${count.index}"
   gke_location            = var.gke_location
   gke_node_count          = var.gke_node_count
   gke_service_account     = var.gke_service_account
@@ -32,7 +32,11 @@ module "gke" {
   depends_on              = [module.network-gcp]
   auto_scaling_min_node_count = var.auto_scaling_min_node_count
   auto_scaling_max_node_count = var.auto_scaling_max_node_count
+  count                  = var.gke_count
 }
+
+
+
 
 module "sql" {
   source = "./modules/sql"
@@ -43,5 +47,31 @@ module "sql" {
   sql_intance_region = "us-east1"
   sql_disk_autoresize = var.sql_disk_autoresize
   sql_tier = var.sql_tier
-  depends_on = [module.network-gcp]
+  sql_private_network = module.network-gcp.vpc_self_link
+  sql_ip_public_enabled = var.sql_ip_public_enabled
+  depends_on = [module.network-gcp, google_service_networking_connection.private_vpc_connection_01]
 }
+
+
+
+#Faixa de IP reservada para o peering
+resource "google_compute_global_address" "private_ip_range" {
+  name          = "private-sql-range"
+  purpose       = "VPC_PEERING"
+  address_type  = "INTERNAL"
+  prefix_length = 24
+  network       = module.network-gcp.vpc_id
+  depends_on = [ module.network-gcp ]
+}
+
+#Peering com o Service Networking
+resource "google_service_networking_connection" "private_vpc_connection_01" {
+  network                 = module.network-gcp.vpc_id
+  service                 = "servicenetworking.googleapis.com"
+  reserved_peering_ranges = [google_compute_global_address.private_ip_range.name]
+    lifecycle {
+    prevent_destroy = false  # Evita que o Terraform tente destruir a conexão existente
+  }
+  depends_on = [ module.network-gcp, google_compute_global_address.private_ip_range ]
+}
+
