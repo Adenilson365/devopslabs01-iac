@@ -9,5 +9,8 @@ gcp
 backend.tf
 terraform.tfstate*
 providers.tf
-*.tfvars
+
 export-credentials.sh
+export_tf_vars.sh
+credentials-mgmt.json
+credentials*

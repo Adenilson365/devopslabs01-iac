@@ -49,3 +49,23 @@ data "terraform_remote_state" "remote" {
 }
 ```
 
+### Aplicar terraform
+
+- Antes de aplicar exporte a service_account correspondente
+
+```bash
+export TF_VAR_gke_service_account = "<serviceAccount>"
+
+#formato: <nome>@<projeto>.iam.gserviceaccount.com
+```
+
+``` bash
+terraform apply -var-file ./env/dev/dev.tfvars
+terraform apply -var-file ./env/prod/prod.tfvars
+terraform apply -var-file ./env/mgmt/mgmt.tfvars
+
+terraform destroy -var-file ./env/dev/dev.tfvars
+terraform destroy -var-file ./env/prod/prod.tfvars
+terraform destroy -var-file ./env/mgmt/mgmt.tfvars
+```
+

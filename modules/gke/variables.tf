@@ -77,14 +77,14 @@ variable "project_id" {
 variable "namespace_external_secrets" {
   description = "The namespace of the external secrets"
   type        = string
-  default = "external-secrets"
+  default     = "external-secrets"
 }
 
 variable "service_account_kubernetes" {
   description = "The service account for Kubernetes"
   type        = string
-  default = "external-secrets-sa"
-  
+  default     = "external-secrets"
+
 }
 
 variable "auto_scaling_min_node_count" {
@@ -97,4 +97,10 @@ variable "auto_scaling_max_node_count" {
   description = "The maximum number of nodes in the GKE cluster"
   type        = number
   default     = 3
+}
+
+variable "project_number" {
+  description = "The project number"
+  type        = string
+
 }

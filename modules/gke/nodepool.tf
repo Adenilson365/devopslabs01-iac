@@ -20,3 +20,25 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
 
 
 }
+
+resource "google_service_account" "secret_accessor" {
+  account_id   = "eso-secret-accessor"
+  display_name = "eso-secret-accessor"
+  project      = var.project_id
+  depends_on   = [google_container_cluster.primary]
+}
+
+resource "google_project_iam_member" "secretAccessor" {
+  project = var.project_id
+  role    = "roles/secretmanager.secretAccessor"
+  member = "serviceAccount:${var.project_id}.svc.id.goog[${var.namespace_external_secrets}/${var.service_account_kubernetes}]"
+
+}
+
+resource "google_service_account_iam_member" "allow_k8s_assume" {
+  service_account_id = google_service_account.secret_accessor.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "serviceAccount:${var.project_id}.svc.id.goog[${var.namespace_external_secrets}/${var.service_account_kubernetes}]"
+}
+
+

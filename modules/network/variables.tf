@@ -13,3 +13,7 @@ variable "firewall_name" {
 variable "vpc_regions" {
   type = set(string)
 }
+
+variable "project_id" {
+  type = string
+}
