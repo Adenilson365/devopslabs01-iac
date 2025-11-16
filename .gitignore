@@ -14,3 +14,4 @@ export-credentials.sh
 export_tf_vars.sh
 credentials-mgmt.json
 credentials*
+analise.md

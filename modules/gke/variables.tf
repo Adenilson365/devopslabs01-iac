@@ -104,3 +104,14 @@ variable "project_number" {
   type        = string
 
 }
+
+variable "gke_min_master_version" {
+  description = "The minimum master version for the GKE cluster"
+  type        = string
+  default     = "1.32.6-gke.1060000"
+}
+variable "gke_node_version" {
+  description = "The version of the nodes in the GKE cluster"
+  type        = string
+  default     = "1.32.6-gke.1060000"
+}

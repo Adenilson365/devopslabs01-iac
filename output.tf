@@ -7,19 +7,19 @@
 # }
 
 
-# output "vpc_self_link" {
-#   value = module.network-gcp.vpc_self_link
+output "vpc_self_link" {
+  value = module.vpc.self_link
 
-# }
+}
 
-# output "vpc_id" {
-#   value = module.network-gcp.vpc_id
+output "vpc_id" {
+  value = module.vpc.id
 
-# }
+}
 
-# output "module_gke_name" {
-#   value = module.gke.gke_name_output
-# }
+# # output "module_gke_name" {
+# #   value = module.gke.gke_name_output
+# # }
 
 # output "module_sql_instance_ip" {
 #   value = module.sql.ip_address

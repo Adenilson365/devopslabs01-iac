@@ -10,16 +10,16 @@ gke_location                = "us-central1"
 gke_node_count              = 1
 gke_network                 = "argo-dev-vpc"
 gke_subnet                  = "subnet-us-central1"
-gke_disk_size               = 30
+gke_disk_size               = 20
 gke_disk_type               = "pd-standard"
-gke_type_node               = "e2-standard-4"
+gke_type_node               = "e2-small"
 gke_deletion_protection     = false
 node_locations              = ["us-central1-b"]
-project_id                  = "argo-dev-455710"
+project_id                  = "develop-464014"
 auto_scaling_min_node_count = 1
 auto_scaling_max_node_count = 8
 gke_count                   = 1
-project_number              = "389450573049"
+project_number              = "1002355672715"
 #   gcloud projects describe <IdDoProjeto> --format="value(projectNumber)"
 
 # SQL variables
