@@ -35,6 +35,16 @@ variable "gke_subnet" {
   default     = "default"
 
 }
+
+variable "gke_pods_secondary_range_name" {
+  description = "The secondary range name for GKE Pods"
+  type        = string
+}
+
+variable "gke_services_secondary_range_name" {
+  description = "The secondary range name for GKE Services"
+  type        = string
+}
 variable "gke_disk_size" {
   description = "The size of the disk for the GKE cluster"
   type        = number

@@ -54,6 +54,33 @@ variable "gke_subnet" {
   type        = string
 
 }
+
+variable "gke_enable_secondary_ranges" {
+  description = "Whether the primary subnet should include secondary ranges for GKE."
+  type        = bool
+  default     = true
+}
+
+variable "gke_pods_secondary_range_name" {
+  description = "Name of the secondary range used for GKE Pods."
+  type        = string
+}
+
+variable "gke_pods_secondary_range_cidr" {
+  description = "CIDR of the secondary range used for GKE Pods."
+  type        = string
+}
+
+variable "gke_services_secondary_range_name" {
+  description = "Name of the secondary range used for GKE Services."
+  type        = string
+}
+
+variable "gke_services_secondary_range_cidr" {
+  description = "CIDR of the secondary range used for GKE Services."
+  type        = string
+}
+
 variable "gke_disk_size" {
   description = "The size of the disk for the GKE cluster"
   type        = number

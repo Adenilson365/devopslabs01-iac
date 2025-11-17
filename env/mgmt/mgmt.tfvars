@@ -23,6 +23,11 @@ auto_scaling_max_node_count = 5
 gke_count                   = 1
 project_number              = "672207743514"
 #   gcloud projects describe <IdDoProjeto> --format="value(projectNumber)"
+gke_enable_secondary_ranges       = true
+gke_pods_secondary_range_name     = "pods-argo-mgmt"
+gke_pods_secondary_range_cidr     = "10.110.0.0/17"
+gke_services_secondary_range_name = "services-argo-mgmt"
+gke_services_secondary_range_cidr = "10.210.0.0/22"
 
 # SQL variables
 sql_instance_name             = "sql-devops-labs01"

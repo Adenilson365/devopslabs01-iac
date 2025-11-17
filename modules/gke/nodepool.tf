@@ -28,8 +28,6 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
     max_node_count = var.auto_scaling_max_node_count
   }
 
-  version = "1.32.6-gke.1060000"
-
 }
 
 resource "google_service_account" "secret_accessor" {
@@ -51,5 +49,4 @@ resource "google_service_account_iam_member" "allow_k8s_assume" {
   role               = "roles/iam.workloadIdentityUser"
   member             = "serviceAccount:${var.project_id}.svc.id.goog[${var.namespace_external_secrets}/${var.service_account_kubernetes}]"
 }
-
 
