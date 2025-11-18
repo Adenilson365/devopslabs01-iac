@@ -26,6 +26,9 @@ gke_services_secondary_range_name = "services-argo-dev"
 gke_services_secondary_range_cidr = "10.210.0.0/22"
 project_number              = "1002355672715"
 #   gcloud projects describe <IdDoProjeto> --format="value(projectNumber)"
+service_account_kubernetes = "external-secrets"
+namespace_external_secrets  = "external-secrets"
+
 
 # SQL variables
 sql_instance_name             = "sql-devops-labs01"

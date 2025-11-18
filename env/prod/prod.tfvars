@@ -12,7 +12,7 @@ gke_network                 = "argo-prd-vpc"
 gke_subnet                  = "subnet-us-east1"
 gke_disk_size               = 30
 gke_disk_type               = "pd-standard"
-gke_type_node               = "e2-standard-4"
+gke_type_node               = "e2-standard-2"
 gke_deletion_protection     = false
 node_locations              = ["us-east1-b"]
 project_id                  = "argo-prod-471308"
@@ -26,6 +26,8 @@ gke_pods_secondary_range_cidr     = "10.110.0.0/17"
 gke_services_secondary_range_name = "services-argo-prod"
 gke_services_secondary_range_cidr = "10.210.0.0/22"
 
+service_account_kubernetes = "external-secrets"
+namespace_external_secrets  = "external-secrets"
 
 # SQL variables
 sql_instance_name             = "sql-argo-prd"

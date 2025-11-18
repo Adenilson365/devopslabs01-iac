@@ -1,6 +1,6 @@
 resource "google_container_node_pool" "primary_preemptible_nodes" {
-  name       = var.gke_name
-  cluster    = google_container_cluster.primary.id
+  name       = var.nodepool_name
+  cluster    = var.gke_cluster_id
   node_count = var.gke_node_count
 
 
@@ -10,7 +10,7 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
   }
 
   node_config {
-    preemptible     = true # Cria VMs mais baratas, mas que podem ser desligadas a qualquer momento pelo Google (parecido com Spot)
+    preemptible     = var.node_config_preemptible # Cria VMs mais baratas, mas que podem ser desligadas a qualquer momento pelo Google (parecido com Spot)
     machine_type    = var.gke_type_node
     service_account = var.gke_service_account
     disk_size_gb    = var.gke_disk_size
@@ -34,7 +34,6 @@ resource "google_service_account" "secret_accessor" {
   account_id   = "eso-secret-accessor"
   display_name = "eso-secret-accessor"
   project      = var.project_id
-  depends_on   = [google_container_cluster.primary]
 }
 
 resource "google_project_iam_member" "secretAccessor" {

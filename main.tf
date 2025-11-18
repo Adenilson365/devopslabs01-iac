@@ -44,31 +44,65 @@ module "firewall" {
   depends_on = [ module.subnet ]
 }
 
-
-module "gke" {
-  source                      = "./modules/gke"
-  gke_name                    = "${var.gke_name}-${count.index}"
+module "gke_cluster" {
+  source                      = "./modules/gke/master"
+  gke_name                    = var.gke_name
   gke_location                = var.gke_location
-  gke_node_count              = var.gke_node_count
-  gke_service_account         = var.gke_service_account
   gke_network                 = module.vpc.id
   gke_subnet                  = module.subnet[0].subnet_self_link
-  gke_disk_size               = var.gke_disk_size
-  gke_disk_type               = var.gke_disk_type
-  gke_type_node               = var.gke_type_node
   gke_deletion_protection     = var.gke_deletion_protection
   node_locations              = var.node_locations
   project_id                  = var.project_id
-  auto_scaling_min_node_count = var.auto_scaling_min_node_count
-  auto_scaling_max_node_count = var.auto_scaling_max_node_count
   count                       = var.gke_count
-  project_number              = var.project_number
-  gke_min_master_version      = "1.30.12-gke.1372000"
   gke_pods_secondary_range_name     = var.gke_pods_secondary_range_name
   gke_services_secondary_range_name = var.gke_services_secondary_range_name
   depends_on                  = [module.vpc, module.subnet]
 }
 
+module "workload_identity" {
+  source = "./modules/gke/workload_identity"
+  project_id = var.project_id
+namespace_kubernetes = "external-secrets"
+  service_account_kubernetes = var.service_account_kubernetes
+  google_service_account_id = "eso-secret-accessor"
+google_service_account_display_name = "External Secrets Operator Secret Accessor"
+}
+
+module "gke_nodepool_app" {
+  source                      = "./modules/gke/nodepool"
+  nodepool_name               = "np-app"
+  project_number              = var.project_number
+  gke_cluster_id              = module.gke_cluster[count.index].gke_cluster_id
+  gke_node_count              = var.gke_node_count
+  gke_service_account         = var.gke_service_account
+  gke_disk_size               = var.gke_disk_size
+  gke_disk_type               = var.gke_disk_type
+  gke_type_node               = var.gke_type_node
+  node_locations              = var.node_locations
+  project_id                  = var.project_id
+  auto_scaling_min_node_count = var.auto_scaling_min_node_count
+  auto_scaling_max_node_count = var.auto_scaling_max_node_count
+  count                       = var.gke_count
+  depends_on                  = [module.gke_cluster]
+}
+
+module "gke_nodepool_mon" {
+  source                      = "./modules/gke/nodepool"
+  nodepool_name               = "np-mon"
+  project_number              = var.project_number
+  gke_cluster_id              = module.gke_cluster[count.index].gke_cluster_id
+  gke_node_count              = 2
+  gke_service_account         = var.gke_service_account
+  gke_disk_size               = var.gke_disk_size
+  gke_disk_type               = var.gke_disk_type
+  gke_type_node               = "e2-medium"
+  node_locations              = var.node_locations
+  project_id                  = var.project_id
+  auto_scaling_min_node_count = var.auto_scaling_min_node_count
+  auto_scaling_max_node_count = var.auto_scaling_max_node_count
+  count                       = var.gke_count
+  depends_on                  = [module.gke_cluster]
+}
 
 
 
