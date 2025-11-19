@@ -62,8 +62,8 @@ module "gke_cluster" {
 module "workload_identity" {
   source = "./modules/gke/workload_identity"
   project_id = var.project_id
-namespace_kubernetes = "external-secrets"
-  service_account_kubernetes = var.service_account_kubernetes
+  namespace_kubernetes = "external-secrets"
+  service_account_kubernetes = "external-secrets"
   google_service_account_id = "eso-secret-accessor"
 google_service_account_display_name = "External Secrets Operator Secret Accessor"
 }
@@ -106,42 +106,47 @@ module "gke_nodepool_mon" {
 
 
 
-# module "sql" {
-#   source                        = "./modules/sql"
-#   sql_instance_name             = var.sql_instance_name
-#   sql_instance_region           = var.sql_instance_region
-#   sql_instance_database_version = var.sql_instance_database_version
-#   sql_deletion_protection       = var.sql_deletion_protection
-#   sql_intance_region            = "us-east1"
-#   sql_disk_autoresize           = var.sql_disk_autoresize
-#   sql_tier                      = var.sql_tier
-#   sql_private_network           = module.network-gcp.vpc_self_link
-#   sql_ip_public_enabled         = var.sql_ip_public_enabled
-#   depends_on                    = [module.network-gcp, google_service_networking_connection.private_vpc_connection_01]
-# }
+module "sql" {
+  source                        = "./modules/sql"
+  sql_instance_name             = var.sql_instance_name
+  sql_instance_region           = var.sql_instance_region
+  sql_instance_database_version = var.sql_instance_database_version
+  sql_deletion_protection       = var.sql_deletion_protection
+  sql_intance_region            = "us-east1"
+  sql_disk_autoresize           = var.sql_disk_autoresize
+  sql_tier                      = var.sql_tier
+  sql_private_network           = module.vpc.self_link
+  sql_ip_public_enabled         = var.sql_ip_public_enabled
+  backup_enabled = true
+  backup_start_time = "03:00"
+  sql_backup_region = "us-east1"
+  retained_backups = 7
+  retention_unit = "COUNT"
+  depends_on                    = [module.vpc, google_service_networking_connection.private_vpc_connection_01]
+}
 
 
 
-# #Faixa de IP reservada para o peering
-# resource "google_compute_global_address" "private_ip_range" {
-#   name          = "private-sql-range"
-#   purpose       = "VPC_PEERING"
-#   address_type  = "INTERNAL"
-#   prefix_length = 24
-#   network       = module.network-gcp.vpc_id
-#   depends_on    = [module.network-gcp]
-# }
+#Faixa de IP reservada para o peering
+resource "google_compute_global_address" "private_ip_range" {
+  name          = "private-sql-range"
+  purpose       = "VPC_PEERING"
+  address_type  = "INTERNAL"
+  prefix_length = 24
+  network       = module.vpc.id
+  depends_on    = [module.vpc]
+}
 
-# #Peering com o Service Networking
-# resource "google_service_networking_connection" "private_vpc_connection_01" {
-#   network                 = module.network-gcp.vpc_id
-#   service                 = "servicenetworking.googleapis.com"
-#   reserved_peering_ranges = [google_compute_global_address.private_ip_range.name]
-#   lifecycle {
-#     prevent_destroy = false # Evita que o Terraform tente destruir a conexão existente
-#   }
-#   depends_on = [module.network-gcp, google_compute_global_address.private_ip_range]
-# }
+#Peering com o Service Networking
+resource "google_service_networking_connection" "private_vpc_connection_01" {
+  network                 = module.vpc.id
+  service                 = "servicenetworking.googleapis.com"
+  reserved_peering_ranges = [google_compute_global_address.private_ip_range.name]
+  lifecycle {
+    prevent_destroy = false # Evita que o Terraform tente destruir a conexão existente
+  }
+  depends_on = [module.vpc, google_compute_global_address.private_ip_range]
+}
 
 
 # # teste bucket

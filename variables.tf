@@ -122,18 +122,18 @@ variable "project_number" {
   type        = string
 }
 
-variable "namespace_external_secrets" {
-  description = "The namespace of the external secrets"
-  type        = string
-  default     = "external-secrets"
-}
+# variable "workload_identity_namespace_kubernetes" {
+#   description = "The namespace of the external secrets"
+#   type        = string
+#   default     = "external-secrets"
+# }
 
-variable "service_account_kubernetes" {
-  description = "The service account for Kubernetes"
-  type        = string
-  default     = "external-secrets"
+# variable "service_account_kubernetes" {
+#   description = "The service account for Kubernetes"
+#   type        = string
+#   default     = "external-secrets"
 
-}
+# }
 
 # SQL variables
 variable "sql_instance_name" {

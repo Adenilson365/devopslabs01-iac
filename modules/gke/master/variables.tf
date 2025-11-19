@@ -1,7 +1,7 @@
 variable "gke_name" {
   description = "The name of the GKE cluster"
   type        = string
-  default     = "strategy-rollout-rollback-gcp-tf"
+  default     = "gke-terraform"
 }
 
 variable "gke_location" {

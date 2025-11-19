@@ -1,4 +1,4 @@
-resource "google_container_node_pool" "primary_preemptible_nodes" {
+resource "google_container_node_pool" "pool" {
   name       = var.nodepool_name
   cluster    = var.gke_cluster_id
   node_count = var.gke_node_count
@@ -17,8 +17,6 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
     disk_type       = var.gke_disk_type
 
 
-
-
     workload_metadata_config {
       mode = "GKE_METADATA"
     }
@@ -30,22 +28,4 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
 
 }
 
-resource "google_service_account" "secret_accessor" {
-  account_id   = "eso-secret-accessor"
-  display_name = "eso-secret-accessor"
-  project      = var.project_id
-}
-
-resource "google_project_iam_member" "secretAccessor" {
-  project = var.project_id
-  role    = "roles/secretmanager.secretAccessor"
-  member  = "serviceAccount:${var.project_id}.svc.id.goog[${var.namespace_external_secrets}/${var.service_account_kubernetes}]"
-
-}
-
-resource "google_service_account_iam_member" "allow_k8s_assume" {
-  service_account_id = google_service_account.secret_accessor.name
-  role               = "roles/iam.workloadIdentityUser"
-  member             = "serviceAccount:${var.project_id}.svc.id.goog[${var.namespace_external_secrets}/${var.service_account_kubernetes}]"
-}
 

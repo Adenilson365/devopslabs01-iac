@@ -26,8 +26,8 @@ gke_pods_secondary_range_cidr     = "10.110.0.0/17"
 gke_services_secondary_range_name = "services-argo-prod"
 gke_services_secondary_range_cidr = "10.210.0.0/22"
 
-service_account_kubernetes = "external-secrets"
-namespace_external_secrets  = "external-secrets"
+#service_account_kubernetes = "external-secrets"
+#namespace_external_secrets  = "external-secrets"
 
 # SQL variables
 sql_instance_name             = "sql-argo-prd"

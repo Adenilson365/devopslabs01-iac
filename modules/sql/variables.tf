@@ -54,3 +54,30 @@ variable "sql_ip_public_enabled" {
   default     = false
 
 }
+
+variable "backup_enabled" {
+  description = "Enable backups for the SQL instance"
+  type        = bool
+  default     = true
+}
+variable "backup_start_time" {
+  description = "Start time for daily backups (HH:MM format, UTC)"
+  type        = string
+  default     = "03:00"
+}
+
+variable "sql_backup_region" {
+  description = "Region where backups will be stored"
+  type        = string
+}
+
+variable "retained_backups" {
+  description = "Number of backups to retain"
+  type        = number
+  default     = 7
+}
+variable "retention_unit" {
+  description = "Unit for backup retention (e.g., COUNT, DAYS)"
+  type        = string
+  default     = "COUNT"
+}

@@ -19,6 +19,16 @@ resource "google_sql_database_instance" "sql_instance" {
       private_network                               = var.sql_private_network
       enable_private_path_for_google_cloud_services = true
     }
+
+    backup_configuration {
+    enabled = var.backup_enabled
+    start_time = var.backup_start_time
+    location = var.sql_backup_region 
+    backup_retention_settings {
+      retained_backups = var.retained_backups
+      retention_unit = var.retention_unit
+    }
+    }
   }
 
 
