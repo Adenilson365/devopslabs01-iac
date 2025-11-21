@@ -16,9 +16,13 @@ variable "service_account_kubernetes" {
 
 variable "google_service_account_id" {
   description = "ID service Account in Google Cloud Platform"
-  type = string
+  type        = string
 }
-variable  "google_service_account_display_name" {
+variable "google_service_account_display_name" {
   description = "Display name service Account in Google Cloud Platform"
-  type = string
+  type        = string
+}
+variable "iam_role" {
+  description = "The IAM role to be assigned"
+  type        = string
 }

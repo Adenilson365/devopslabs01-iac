@@ -9,7 +9,7 @@ resource "google_compute_firewall" "tf-firewall" {
     ports    = var.ports
   }
 
-  source_tags =  var.source_tags != [] ? var.source_tags : null
+  source_tags   = var.source_tags != [] ? var.source_tags : null
   source_ranges = var.source_ranges != [] ? var.source_ranges : null
 }
 

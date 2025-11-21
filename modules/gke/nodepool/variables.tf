@@ -86,6 +86,6 @@ variable "project_number" {
 }
 
 variable "node_config_preemptible" {
-  type = bool
+  type    = bool
   default = false
 }

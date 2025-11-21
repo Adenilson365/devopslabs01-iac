@@ -5,9 +5,16 @@ resource "google_service_account" "service_account" {
   project      = var.project_id
 }
 
+# resource "google_project_iam_member" "iam_member" {
+#   project = var.project_id
+#   role    = "roles/secretmanager.secretAccessor"
+#   member  = "serviceAccount:${var.project_id}.svc.id.goog[${var.namespace_kubernetes}/${var.service_account_kubernetes}]"
+
+# }
+
 resource "google_project_iam_member" "iam_member" {
   project = var.project_id
-  role    = "roles/secretmanager.secretAccessor"
+  role    = var.iam_role
   member  = "serviceAccount:${var.project_id}.svc.id.goog[${var.namespace_kubernetes}/${var.service_account_kubernetes}]"
 
 }

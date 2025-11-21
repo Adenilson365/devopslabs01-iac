@@ -77,7 +77,7 @@ variable "retained_backups" {
   default     = 7
 }
 variable "retention_unit" {
-  description = "Unit for backup retention (e.g., COUNT, DAYS)"
+  description = "Number of backups to retain, for retained_backups configuration"
   type        = string
   default     = "COUNT"
 }

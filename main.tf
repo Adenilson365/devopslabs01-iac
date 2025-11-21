@@ -8,64 +8,75 @@
 # # }
 
 module "vpc" {
-  source = "./modules/network/vpc"
-  vpc_name   = var.vpc_name
-  project_id = var.project_id
-  vpc_description = "VPC criada para testes"
-  auto_create_subnetworks = false
-  routing_mode = "REGIONAL"
+  source                          = "./modules/network/vpc"
+  vpc_name                        = var.vpc_name
+  project_id                      = var.project_id
+  vpc_description                 = "VPC criada para testes"
+  auto_create_subnetworks         = false
+  routing_mode                    = "REGIONAL"
   delete_default_routes_on_create = false
-  mtu = 1460
-  enable_ula_internal_ipv6 = false
+  mtu                             = 1460
+  enable_ula_internal_ipv6        = false
 }
 
 module "subnet" {
-  source = "./modules/network/subnet"
-  subnet_name = "subnet-${count.index}"
-  vpc_network_id = module.vpc.id
-  ip_cidr_range = "10.${count.index}.0.0/20"
-  vpc_region = var.vpc_regions[count.index]
-  enable_secondary_ranges = var.gke_enable_secondary_ranges && count.index == 0
-  pods_secondary_ip_range_name = count.index == 0 ? var.gke_pods_secondary_range_name : null
-  pods_secondary_ip_cidr_range = count.index == 0 ? var.gke_pods_secondary_range_cidr : null
+  source                           = "./modules/network/subnet"
+  subnet_name                      = "subnet-${count.index}"
+  vpc_network_id                   = module.vpc.id
+  ip_cidr_range                    = "10.${count.index}.0.0/20"
+  vpc_region                       = var.vpc_regions[count.index]
+  enable_secondary_ranges          = var.gke_enable_secondary_ranges && count.index == 0
+  pods_secondary_ip_range_name     = count.index == 0 ? var.gke_pods_secondary_range_name : null
+  pods_secondary_ip_cidr_range     = count.index == 0 ? var.gke_pods_secondary_range_cidr : null
   services_secondary_ip_range_name = count.index == 0 ? var.gke_services_secondary_range_name : null
   services_secondary_ip_cidr_range = count.index == 0 ? var.gke_services_secondary_range_cidr : null
-  count = length(var.vpc_regions)
-  depends_on = [ module.vpc ]
+  count                            = length(var.vpc_regions)
+  depends_on                       = [module.vpc]
 }
 
 module "firewall" {
-  source = "./modules/network/firewall"
-  firewall_name   = "allow-internal-icmp"
-  vpc_network_id  = module.vpc.id
-  protocol        = "tcp"
-  ports           = ["8080","443", "80"]
-  source_ranges = ["0.0.0.0/0"]
-  depends_on = [ module.subnet ]
+  source         = "./modules/network/firewall"
+  firewall_name  = "allow-internal-icmp"
+  vpc_network_id = module.vpc.id
+  protocol       = "tcp"
+  ports          = ["8080", "443", "80"]
+  source_ranges  = ["0.0.0.0/0"]
+  depends_on     = [module.subnet]
 }
 
 module "gke_cluster" {
-  source                      = "./modules/gke/master"
-  gke_name                    = var.gke_name
-  gke_location                = var.gke_location
-  gke_network                 = module.vpc.id
-  gke_subnet                  = module.subnet[0].subnet_self_link
-  gke_deletion_protection     = var.gke_deletion_protection
-  node_locations              = var.node_locations
-  project_id                  = var.project_id
-  count                       = var.gke_count
+  source                            = "./modules/gke/master"
+  gke_name                          = var.gke_name
+  gke_location                      = var.gke_location
+  gke_network                       = module.vpc.id
+  gke_subnet                        = module.subnet[0].subnet_self_link
+  gke_deletion_protection           = var.gke_deletion_protection
+  node_locations                    = var.node_locations
+  project_id                        = var.project_id
+  count                             = var.gke_count
   gke_pods_secondary_range_name     = var.gke_pods_secondary_range_name
   gke_services_secondary_range_name = var.gke_services_secondary_range_name
-  depends_on                  = [module.vpc, module.subnet]
+  depends_on                        = [module.vpc, module.subnet]
 }
 
 module "workload_identity" {
-  source = "./modules/gke/workload_identity"
-  project_id = var.project_id
-  namespace_kubernetes = "external-secrets"
-  service_account_kubernetes = "external-secrets"
-  google_service_account_id = "eso-secret-accessor"
-google_service_account_display_name = "External Secrets Operator Secret Accessor"
+  source                              = "./modules/gke/workload_identity"
+  project_id                          = var.project_id
+  namespace_kubernetes                = "external-secrets"
+  service_account_kubernetes          = "external-secrets"
+  google_service_account_id           = "eso-secret-accessor"
+  google_service_account_display_name = "External Secrets Operator Secret Accessor"
+  iam_role                            = "roles/secretmanager.admin"
+}
+
+module "workload_identity_wk" {
+  source                              = "./modules/gke/workload_identity"
+  project_id                          = var.project_id
+  namespace_kubernetes                = "wk-lab"
+  service_account_kubernetes          = "ksa-wi-lab"
+  google_service_account_id           = "wi-lab-sa"
+  google_service_account_display_name = "compute list instances"
+  iam_role                            = "roles/compute.admin"
 }
 
 module "gke_nodepool_app" {
@@ -86,67 +97,67 @@ module "gke_nodepool_app" {
   depends_on                  = [module.gke_cluster]
 }
 
-module "gke_nodepool_mon" {
-  source                      = "./modules/gke/nodepool"
-  nodepool_name               = "np-mon"
-  project_number              = var.project_number
-  gke_cluster_id              = module.gke_cluster[count.index].gke_cluster_id
-  gke_node_count              = 2
-  gke_service_account         = var.gke_service_account
-  gke_disk_size               = var.gke_disk_size
-  gke_disk_type               = var.gke_disk_type
-  gke_type_node               = "e2-medium"
-  node_locations              = var.node_locations
-  project_id                  = var.project_id
-  auto_scaling_min_node_count = var.auto_scaling_min_node_count
-  auto_scaling_max_node_count = var.auto_scaling_max_node_count
-  count                       = var.gke_count
-  depends_on                  = [module.gke_cluster]
-}
+# module "gke_nodepool_mon" {
+#   source                      = "./modules/gke/nodepool"
+#   nodepool_name               = "np-mon"
+#   project_number              = var.project_number
+#   gke_cluster_id              = module.gke_cluster[count.index].gke_cluster_id
+#   gke_node_count              = 2
+#   gke_service_account         = var.gke_service_account
+#   gke_disk_size               = var.gke_disk_size
+#   gke_disk_type               = var.gke_disk_type
+#   gke_type_node               = "e2-medium"
+#   node_locations              = var.node_locations
+#   project_id                  = var.project_id
+#   auto_scaling_min_node_count = var.auto_scaling_min_node_count
+#   auto_scaling_max_node_count = var.auto_scaling_max_node_count
+#   count                       = var.gke_count
+#   depends_on                  = [module.gke_cluster]
+# }
 
 
 
-module "sql" {
-  source                        = "./modules/sql"
-  sql_instance_name             = var.sql_instance_name
-  sql_instance_region           = var.sql_instance_region
-  sql_instance_database_version = var.sql_instance_database_version
-  sql_deletion_protection       = var.sql_deletion_protection
-  sql_intance_region            = "us-east1"
-  sql_disk_autoresize           = var.sql_disk_autoresize
-  sql_tier                      = var.sql_tier
-  sql_private_network           = module.vpc.self_link
-  sql_ip_public_enabled         = var.sql_ip_public_enabled
-  backup_enabled = true
-  backup_start_time = "03:00"
-  sql_backup_region = "us-east1"
-  retained_backups = 7
-  retention_unit = "COUNT"
-  depends_on                    = [module.vpc, google_service_networking_connection.private_vpc_connection_01]
-}
+# module "sql" {
+#   source                        = "./modules/sql"
+#   sql_instance_name             = var.sql_instance_name
+#   sql_instance_region           = var.sql_instance_region
+#   sql_instance_database_version = var.sql_instance_database_version
+#   sql_deletion_protection       = var.sql_deletion_protection
+#   sql_intance_region            = "us-east1"
+#   sql_disk_autoresize           = var.sql_disk_autoresize
+#   sql_tier                      = var.sql_tier
+#   sql_private_network           = module.vpc.self_link
+#   sql_ip_public_enabled         = var.sql_ip_public_enabled
+#   backup_enabled = true
+#   backup_start_time = "03:00"
+#   sql_backup_region = "us-central1"
+#   retained_backups = 7
+#   retention_unit = "COUNT"
+#   depends_on                    = [module.vpc, google_service_networking_connection.private_vpc_connection_01]
+# }
 
 
 
-#Faixa de IP reservada para o peering
-resource "google_compute_global_address" "private_ip_range" {
-  name          = "private-sql-range"
-  purpose       = "VPC_PEERING"
-  address_type  = "INTERNAL"
-  prefix_length = 24
-  network       = module.vpc.id
-  depends_on    = [module.vpc]
-}
+# #Faixa de IP reservada para o peering
+# resource "google_compute_global_address" "private_ip_range" {
+#   name          = "private-sql-range"
+#   purpose       = "VPC_PEERING"
+#   address_type  = "INTERNAL"
+#   prefix_length = 24
+#   network       = module.vpc.id
+#   depends_on    = [module.vpc]
+# }
 
-#Peering com o Service Networking
-resource "google_service_networking_connection" "private_vpc_connection_01" {
-  network                 = module.vpc.id
-  service                 = "servicenetworking.googleapis.com"
-  reserved_peering_ranges = [google_compute_global_address.private_ip_range.name]
-  lifecycle {
-    prevent_destroy = false # Evita que o Terraform tente destruir a conexão existente
-  }
-  depends_on = [module.vpc, google_compute_global_address.private_ip_range]
-}
+# #Peering com o Service Networking
+# resource "google_service_networking_connection" "private_vpc_connection_01" {
+#   network                 = module.vpc.id
+#   service                 = "servicenetworking.googleapis.com"
+#   reserved_peering_ranges = [google_compute_global_address.private_ip_range.name]
+#   lifecycle {
+#     prevent_destroy = false # Evita que o Terraform tente destruir a conexão existente
+#   }
+#   depends_on = [module.vpc, google_compute_global_address.private_ip_range]
+# }
 
 
 # # teste bucket
