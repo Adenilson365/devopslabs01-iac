@@ -8,13 +8,41 @@ variable "subnet_name" {
   type        = string
 
 }
-variable "firewall_name" {
-  description = "The name of the firewall"
+
+variable "vpc_description" {
+  description = "The description of the VPC"
   type        = string
 }
 variable "vpc_regions" {
   description = "The regions in which the VPC will be created"
   type        = list(string)
+}
+
+variable "vpc_routing_mode" {
+  description = "The routing mode of the VPC"
+  type        = string
+  default     = "REGIONAL"
+}
+
+variable "vpc_auto_create_subnetworks" {
+  description = "Whether to auto create subnetworks"
+  type        = bool
+  default     = false
+}
+variable "vpc_delete_default_routes_on_create" {
+  description = "Whether to delete default routes on create"
+  type        = bool
+  default     = false
+}
+variable "vpc_mtu" {
+  description = "The MTU of the VPC"
+  type        = number
+  default     = 1460
+}
+variable "vpc_enable_ula_internal_ipv6" {
+  description = "Whether to enable ULA internal IPv6"
+  type        = bool
+  default     = false 
 }
 
 # GKE variables
@@ -181,6 +209,30 @@ variable "sql_ip_public_enabled" {
   default     = false
 
 }
+variable "backup_enabled" {
+  description = "Enable backups for the SQL instance"
+  type        = bool
+  default     = true
+}
+variable "backup_start_time" {
+  description = "Start time for daily backups in HH:MM format"
+  type        = string    
+} 
+variable "sql_backup_region" {
+  description = "The region where backups will be stored"
+  type        = string
+}
+variable "retained_backups" {
+  description = "The number of backups to retain"
+  type        = number
+}
+variable "retention_unit" {
+  description = "The unit for retention (COUNT)"
+  type        = string
+
+}
+
+
 
 #remote data
 variable "backend_bucket" {
@@ -191,3 +243,4 @@ variable "backend_prefix" {
   description = "The prefix for the backend"
   type        = string
 }
+

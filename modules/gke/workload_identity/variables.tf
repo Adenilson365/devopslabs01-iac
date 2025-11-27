@@ -22,7 +22,7 @@ variable "google_service_account_display_name" {
   description = "Display name service Account in Google Cloud Platform"
   type        = string
 }
-variable "iam_role" {
-  description = "The IAM role to be assigned"
-  type        = string
+variable "wk_iam_roles" {
+  description = "The IAM roles to be assigned"
+  type        = list(string)
 }

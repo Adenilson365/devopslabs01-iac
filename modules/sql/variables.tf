@@ -2,10 +2,7 @@ variable "sql_instance_name" {
   description = "value of the SQL instance name"
   type        = string
 }
-variable "sql_intance_region" {
-  description = "value of the SQL instance region"
-  type        = string
-}
+
 variable "sql_instance_database_version" {
   description = "value of the SQL instance database version"
   type        = string
