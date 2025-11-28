@@ -42,7 +42,7 @@ variable "vpc_mtu" {
 variable "vpc_enable_ula_internal_ipv6" {
   description = "Whether to enable ULA internal IPv6"
   type        = bool
-  default     = false 
+  default     = false
 }
 
 # GKE variables
@@ -214,10 +214,10 @@ variable "backup_enabled" {
   type        = bool
   default     = true
 }
-variable "backup_start_time" {
+variable "sql_backup_start_time" {
   description = "Start time for daily backups in HH:MM format"
-  type        = string    
-} 
+  type        = string
+}
 variable "sql_backup_region" {
   description = "The region where backups will be stored"
   type        = string

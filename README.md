@@ -1,16 +1,24 @@
 ## Etapa Atual: Refatoração
 
-### Terraform Google Cloud Platform (GCP)
+### Diagrama
 
-- Cria uma VPC no GCP
-- Cria um cluster do GKE
-- Cria um banco de dados PostgreSQL
+- Infra implantada
+  ![diagramadeInfraestrutura](./doc-assets/gcp-k8s-infra.png)
+
+- Workload Planejado
+  ![diagrama-de-workload](./doc-assets/gcp-k8s-workload.png)
+
+### Terraform Google Cloud Platform (GCP) - Recursos
+
+- VPC com 3 subredes com faixas de ip secundárias para GKE
+- Cluster GKE regional em multiAZ
+- Roles IAM para Workload Identity
+- CloudSql com read replica, politicas de backups e acesso privado.
+- Regras de firewall.
 
 ### Objetivos
 
-- Praticar Terraform
-- Praticar modulos do Terraform
-- Prover infraestrutura para os Laboratórios de estudos de Kubernetes e DevOps
+Provisionar infraestrutura para um ambiente kubernetes GKE, usando IAC com Terraform, com infra modularizada, reaproveitável e multi-ambiente.
 
 ### Como usar
 

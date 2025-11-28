@@ -26,15 +26,26 @@ module "subnet" {
   depends_on                       = [module.vpc]
 }
 
-module "firewall" {
-  source         = "./modules/network/firewall"
-  firewall_name  = "allow-internal-icmp"
-  vpc_network_id = module.vpc.id
-  protocol       = "tcp"
-  ports          = ["8080", "443", "80"]
-  source_ranges  = ["0.0.0.0/0"]
-  depends_on     = [module.subnet]
-}
+# module "firewall" {
+#   source         = "./modules/network/firewall"
+#   firewall_name  = "allow-internal-icmp"
+#   vpc_network_id = module.vpc.id
+#   protocol       = "tcp"
+#   ports          = ["8080", "443", "80"]
+#   source_ranges  = ["0.0.0.0/0"]
+#   depends_on     = [module.subnet]
+# }
+
+
+# module "firewall2" {
+#   source         = "./modules/network/firewall"
+#   firewall_name  = "allow-internal-2"
+#   vpc_network_id = module.vpc.id
+#   protocol       = "tcp"
+#   ports          = ["8080", "443", "80","5432"]
+#   source_ranges  = ["0.0.0.0/0"]
+#   depends_on     = [module.subnet]
+# }
 
 module "gke_cluster" {
   source                            = "./modules/gke/master"
@@ -58,7 +69,7 @@ module "workload_identity" {
   service_account_kubernetes          = "external-secrets"
   google_service_account_id           = "eso-secret-accessor"
   google_service_account_display_name = "External Secrets Operator Secret Accessor"
-  wk_iam_roles                          = ["roles/secretmanager.admin"]
+  wk_iam_roles                        = ["roles/secretmanager.admin"]
 }
 
 module "workload_identity_wk" {
@@ -68,7 +79,7 @@ module "workload_identity_wk" {
   service_account_kubernetes          = "ksa-wi-lab"
   google_service_account_id           = "wi-lab-sa"
   google_service_account_display_name = "compute list instances"
-  wk_iam_roles                          = ["roles/compute.admin", "roles/storage.admin"]
+  wk_iam_roles                        = ["roles/compute.admin", "roles/storage.admin", "roles/cloudsql.admin"]
 }
 
 module "gke_nodepool_app" {
@@ -119,11 +130,11 @@ module "sql" {
   sql_tier                      = var.sql_tier
   sql_private_network           = module.vpc.self_link
   sql_ip_public_enabled         = var.sql_ip_public_enabled
-  backup_enabled = true
-  backup_start_time = var.backup_start_time
-  sql_backup_region = var.sql_backup_region
-  retained_backups = var.retained_backups
-  retention_unit = var.retention_unit
+  backup_enabled                = true
+  backup_start_time             = var.sql_backup_start_time
+  sql_backup_region             = var.sql_backup_region
+  retained_backups              = var.retained_backups
+  retention_unit                = var.retention_unit
   depends_on                    = [module.vpc, google_service_networking_connection.private_vpc_connection_01]
 }
 
@@ -135,8 +146,9 @@ resource "google_compute_global_address" "private_ip_range" {
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
   prefix_length = 24
-  network       = module.vpc.id
-  depends_on    = [module.vpc]
+
+  network    = module.vpc.id
+  depends_on = [module.vpc]
 }
 
 #Peering com o Service Networking
@@ -148,24 +160,4 @@ resource "google_service_networking_connection" "private_vpc_connection_01" {
     prevent_destroy = false # Evita que o Terraform tente destruir a conexão existente
   }
   depends_on = [module.vpc, google_compute_global_address.private_ip_range]
-}
-
-
-# teste bucket
-resource "google_storage_bucket" "bucket" {
-  project                     = var.project_id
-  name                        = "bucket-teste-adenilson-us-central1-${var.project_id}"
-  location                    = "US"
-  force_destroy               = true # apaga o bucket mesmo com arquivos dentro (útil em testes)
-  uniform_bucket_level_access = true # Habilita o acesso uniforme ao nível do bucket
-
-}
-
-resource "google_storage_bucket" "bucke2" {
-  project                     = var.project_id
-  name                        = "bucket-teste-adenilson-us-central1-bucket2-${var.project_id}"
-  location                    = "US"
-  force_destroy               = true # apaga o bucket mesmo com arquivos dentro (útil em testes)
-  uniform_bucket_level_access = true # Habilita o acesso uniforme ao nível do bucket
-
 }

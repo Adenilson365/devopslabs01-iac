@@ -1,14 +1,14 @@
 #VPC variables
-vpc_name      = "argo-prd-vpc"
-subnet_name   = "argo-prd-subnet"
-firewall_name = "fir-argo-prd"
-vpc_regions   = ["us-east1", "us-central1", "us-west1"]
-vpc_description = "VPC para ambiente de producao"
-vpc_routing_mode = "REGIONAL"
-vpc_auto_create_subnetworks = false
+vpc_name                            = "argo-prd-vpc"
+subnet_name                         = "argo-prd-subnet"
+firewall_name                       = "fir-argo-prd"
+vpc_regions                         = ["us-east1", "us-central1", "us-west1"]
+vpc_description                     = "VPC para ambiente de producao"
+vpc_routing_mode                    = "REGIONAL"
+vpc_auto_create_subnetworks         = false
 vpc_delete_default_routes_on_create = false
-vpc_mtu = 1460
-vpc_enable_ula_internal_ipv6 = false
+vpc_mtu                             = 1460
+vpc_enable_ula_internal_ipv6        = false
 
 # GKE variables
 gke_name                          = "argo-prd"
@@ -43,7 +43,7 @@ sql_deletion_protection       = false
 sql_disk_autoresize           = true
 sql_tier                      = "db-f1-micro"
 sql_ip_public_enabled         = false
-sql_backup_start_time        = "03:00"
+sql_backup_start_time         = "03:00"
 retained_backups              = 7
 retention_unit                = "COUNT"
 sql_backup_region             = "us-central1"
