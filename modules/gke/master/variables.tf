@@ -64,3 +64,17 @@ variable "project_id" {
 }
 
 
+# Habilita network policy no cluster GKE
+#https://docs.cloud.google.com/kubernetes-engine/docs/how-to/network-policy
+
+variable "enable_fqdn_network_policy" {
+  description = "Whether to enable FQDN network policy"
+  type = bool
+  default = true
+}
+# Define o datapath provider como ADVANCED_DATAPATH
+variable "datapath_provider" {
+  description = "It's necessary to enable network policy"
+  type = string
+  default = "ADVANCED_DATAPATH"
+}

@@ -9,6 +9,8 @@ resource "google_container_cluster" "primary" {
   remove_default_node_pool = true
   initial_node_count       = 1
   node_locations           = var.node_locations
+  enable_fqdn_network_policy = var.enable_fqdn_network_policy
+  datapath_provider = var.datapath_provider
 
   ip_allocation_policy {
     cluster_secondary_range_name  = var.gke_pods_secondary_range_name

@@ -150,6 +150,18 @@ variable "project_number" {
   type        = string
 }
 
+variable "enable_fqdn_network_policy" {
+  description = "Whether to enable FQDN network policy"
+  type        = bool
+  default     = false
+}
+
+variable "datapath_provider" {
+  description = "It's necessary to enable network policy"
+  type        = string
+  default     = "ADVANCED_DATAPATH"
+}
+
 # variable "workload_identity_namespace_kubernetes" {
 #   description = "The namespace of the external secrets"
 #   type        = string

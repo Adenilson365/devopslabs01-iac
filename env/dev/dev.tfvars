@@ -31,6 +31,8 @@ gke_pods_secondary_range_name     = "pods-argo-prod"
 gke_pods_secondary_range_cidr     = "10.110.0.0/17"
 gke_services_secondary_range_name = "services-argo-prod"
 gke_services_secondary_range_cidr = "10.210.0.0/22"
+enable_fqdn_network_policy        = true
+datapath_provider                 = "ADVANCED_DATAPATH"
 
 #service_account_kubernetes = "external-secrets"
 #namespace_external_secrets  = "external-secrets"
