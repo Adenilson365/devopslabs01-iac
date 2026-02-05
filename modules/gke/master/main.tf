@@ -11,6 +11,9 @@ resource "google_container_cluster" "primary" {
   node_locations           = var.node_locations
   enable_fqdn_network_policy = var.enable_fqdn_network_policy
   datapath_provider = var.datapath_provider
+  gateway_api_config {
+    channel = var.gateway_api_channel 
+  }
 
   ip_allocation_policy {
     cluster_secondary_range_name  = var.gke_pods_secondary_range_name

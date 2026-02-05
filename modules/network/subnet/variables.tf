@@ -47,3 +47,17 @@ variable "services_secondary_ip_cidr_range" {
   type        = string
   default     = null
 }
+
+### Permite adicionar propósito e função ao subnet para uso com envoy no gateway api do GKE
+##https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_subnetwork
+variable "purpose" {
+  description = "Purpose of the subnet (e.g., INTERNAL_HTTPS_LOAD_BALANCER)."
+  type        = string
+  default     = null    
+
+} 
+variable "role" {
+  description = "Role of the subnet (e.g., ACTIVE, BACKUP)."
+  type        = string
+  default     = null    
+}

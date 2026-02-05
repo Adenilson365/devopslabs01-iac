@@ -24,6 +24,24 @@ module "subnet" {
   services_secondary_ip_cidr_range = count.index == 0 ? var.gke_services_secondary_range_cidr : null
   count                            = length(var.vpc_regions)
   depends_on                       = [module.vpc]
+  purpose = null
+  role    = null
+}
+
+module "subnet_proxy" {
+  source                           = "./modules/network/subnet"
+  subnet_name                      = "subnet-proxy"
+  vpc_network_id                   = module.vpc.id
+  ip_cidr_range                    = "10.4.0.0/20"
+  vpc_region                       = var.vpc_regions[0]
+  enable_secondary_ranges          = false
+  pods_secondary_ip_range_name     = null
+  pods_secondary_ip_cidr_range     = null
+  services_secondary_ip_range_name = null
+  services_secondary_ip_cidr_range = null
+  depends_on                       = [module.vpc]
+  purpose = "REGIONAL_MANAGED_PROXY"
+  role    = "ACTIVE"
 }
 
 # module "firewall" {
@@ -62,6 +80,7 @@ module "gke_cluster" {
   depends_on                        = [module.vpc, module.subnet]
   enable_fqdn_network_policy        = var.enable_fqdn_network_policy
   datapath_provider                 = var.datapath_provider
+  gateway_api_channel               = "CHANNEL_STANDARD"
 }
 
 module "workload_identity" {

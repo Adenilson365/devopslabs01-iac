@@ -78,3 +78,9 @@ variable "datapath_provider" {
   type = string
   default = "ADVANCED_DATAPATH"
 }
+
+variable "gateway_api_channel" {
+  description = "The Gateway API channel to use for the GKE cluster"
+  type        = string
+  default     = "CHANNEL_STANDARD"
+}
